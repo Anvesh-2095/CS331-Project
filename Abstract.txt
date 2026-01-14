@@ -1,0 +1,6 @@
+SOAR
+
+We will need a simulation of alert. 
+One module will read them, normalise them and send it to other module
+Other module will check playbook, and do steps
+in case if failure, it will pass message to other module which will record artifacts and tell human
