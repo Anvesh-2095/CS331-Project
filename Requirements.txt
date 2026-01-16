@@ -1,1 +1,30 @@
-Formal Requirements Document
+FUNCTIONAL REQUIREMENTS
+-----------------------
+- Ingest security alerts from multiple external sources including SIEM, IDS/IPS, firewall, and endpoint protection systems.
+- Normalize incoming alerts into a common internal format to support correlation and analysis.
+- Correlate alerts using attributes such as source/destination IP, timestamp, severity level, and alert category.
+- Automatically create and manage incident cases with defined lifecycle states (Open, In Progress, Escalated, Resolved).
+- Support configuration and execution of response playbooks consisting of ordered actions and conditional logic.
+- Execute automated response actions such as IP blocking, user account suspension, and endpoint isolation.
+- Require manual analyst approval for predefined high-impact response actions.
+- Provide real-time notifications for incident creation, escalation, and resolution.
+- Maintain detailed audit logs of alerts, analyst actions, approvals, and automated responses.
+- Generate incident summary and compliance-ready reports.
+
+NON-FUNCTIONAL REQUIREMENTS
+---------------------------
+- Process incoming alerts with near real-time latency suitable for security operations.
+- Support scaling to handle increasing alert volumes and number of integrated tools.
+- Ensure high availability of core incident handling and orchestration services.
+- Enforce role-based access control for all users and system functions.
+- Protect sensitive data using encryption in transit and at rest.
+- Provide an intuitive web-based interface aligned with SOC analyst workflows.
+- Allow configuration changes and playbook updates without system downtime.
+
+SYSTEM AND DEPLOYMENT REQUIREMENTS
+----------------------------------
+- Deployable in cloud-based or on-premise enterprise environments.
+- Accessible through modern web browsers without additional client-side installations.
+- Integrates with external security tools via standard API-based interfaces.
+- Requires persistent storage for incident data, logs, and configuration metadata.
+- Supports secure authentication mechanisms for user access.
