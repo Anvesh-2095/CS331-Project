@@ -1,0 +1,1 @@
+This project focuses on SOAR (Security Orchestration, Automation, and Response) in the domain of computer security. The aim is to study, design, and eventually implement a system that demonstrates how security incidents can be detected, analyzed, and responded to in an automated and orchestrated manner.
