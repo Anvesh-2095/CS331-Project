@@ -44,21 +44,21 @@ All actions and decisions are logged for review and auditing.
 
 Key Features
 --------------
-Centralized security alert management
-Alert normalization and correlation
-Automated incident creation and tracking
-Playbook-based automated responses
-Manual approval for high-impact actions
-Audit logging and reporting support
+Centralized security alert management.
+Alert normalization and correlation.
+Automated incident creation and tracking.
+Playbook-based automated responses.
+Manual approval for high-impact actions.
+Audit logging and reporting support.
 
 
 
 
 System Requirements Summary
 -----------------------------
-Integration with multiple security tools
-Near real-time alert processing
-Secure role-based access control
-High availability and scalability
-Support for cloud and on-premise deployment
+Integration with multiple security tools.
+Near real-time alert processing.
+Secure role-based access control.
+High availability and scalability.
+Support for cloud and on-premise deployment.
 
