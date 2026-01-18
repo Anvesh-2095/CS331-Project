@@ -7,3 +7,19 @@ SOAR
 - Response actions defined in the playbook are executed through a dedicated actuation module.
 - In case of execution failure or exception, control is passed to an error-handling module.
 - The error-handling module records relevant artifacts and notifies a human analyst for manual intervention.
+
+got an email, check attachment or url -> then delete mail, block user
+got a message, check ip
+brute force login attempts -> through spike in logs -> check ip -> if external, turn on firewall
+antivirus detected a malicious file, 
+
+
+
+
+
+
+what to do,
+a simple dashboard
+timer for investigating ip, from arrilval to closing of ticket
+log of each case with timestamp
+false positive management: program blocking ceo. if confidence is low, don't block. pause and ask a human
