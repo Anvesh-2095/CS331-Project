@@ -1,6 +1,9 @@
 SOAR
 
-We will need a simulation of alert.
-One module will read them, normalise them and send them to other module
-Other module will check playbook, and actuate those steps using some other module
-in case if failure, it will pass message to other module which will record artifacts and notify human
+- The system includes a simulated alert generation component to emulate security events from external sources.
+- An alert ingestion module reads incoming alerts and normalizes them into a common internal format.
+- Normalized alerts are forwarded to a processing module for correlation and incident creation.
+- A playbook evaluation module determines the appropriate response workflow based on incident context and severity.
+- Response actions defined in the playbook are executed through a dedicated actuation module.
+- In case of execution failure or exception, control is passed to an error-handling module.
+- The error-handling module records relevant artifacts and notifies a human analyst for manual intervention.
