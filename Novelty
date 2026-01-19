@@ -1,0 +1,85 @@
+Novelty in the Proposed SOAR Project
+
+While traditional SOAR platforms focus primarily on automating predefined response workflows, the novelty of this project lies in making automation context-aware, failure-resilient, and human-centric, rather than purely rule-driven.
+
+1. Failure-Aware Automation with Human-in-the-Loop Escalation
+
+Most SOAR implementations assume that automated actions will succeed. In contrast, this project explicitly treats automation failure as a first-class event.
+Whenever an automated response fails due to tool unavailability, permission issues, or execution errors, the system:
+
+Captures failure artifacts
+
+Records the failure context
+
+Immediately notifies a human analyst
+
+This approach improves operational reliability and ensures that automation does not silently fail, which is a common weakness in existing systems.
+
+2. Explicit Incident Lifecycle Modeling
+
+Instead of treating incidents as static records, this system models incidents as stateful entities with controlled lifecycle transitions (Open → In Progress → Escalated → Resolved).
+This introduces:
+
+Clear accountability
+
+Auditability
+
+SLA tracking potential
+
+Such explicit lifecycle enforcement is often missing in academic SOAR projects and reflects real SOC operational practices.
+
+3. Context-Driven Playbook Selection
+
+Rather than triggering responses purely based on alert type, the system selects playbooks using incident context, including:
+
+Severity
+
+Correlation results
+
+Incident priority
+
+This reduces over-automation and ensures that responses are proportional to the actual risk, improving decision quality.
+
+4. Simulation-Driven Design for Testing and Validation
+
+A built-in alert simulation mechanism is used to emulate real security events.
+This enables:
+
+Safe testing of automation workflows
+
+Validation of playbooks without production systems
+
+Repeatable experimentation
+
+This design choice allows the platform to be evaluated realistically even without access to enterprise-grade security tools.
+
+5. Separation of Coordination and Actuation
+
+The system clearly separates:
+
+Orchestration logic (decision-making, playbook execution)
+
+Actuation logic (actual response execution)
+
+This modularity:
+
+Improves maintainability
+
+Enables future extension
+
+Allows safer automation control
+
+Such separation reflects production-grade architectural thinking rather than a monolithic design.
+
+6. Audit-First Architecture
+
+Every alert, action, approval, failure, and resolution is logged with timestamps and context.
+This makes the platform:
+
+Compliance-ready
+
+Explainable
+
+Suitable for post-incident analysis
+
+Instead of adding logging as an afterthought, auditability is embedded into the core design.
