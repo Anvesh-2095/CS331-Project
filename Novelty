@@ -1,69 +1,23 @@
-Novelty in the Proposed SOAR Project
---------------------------------------
+1)Failure-Aware Automation
+The system remembers failed automated actions and avoids repeating the same failures in similar future incidents.
 
-While traditional SOAR platforms focus primarily on automating predefined response workflows, the novelty of this project lies in making automation context-aware, failure-resilient, and human-centric, rather than purely rule-driven.
+2)Safety-Bounded Responses
+Automated actions are restricted by predefined risk limits so automation cannot cause more damage than manual handling.
 
+3)Incident-Centric Design
+Incidents are treated as stateful entities with controlled lifecycle stages instead of being simple alert groupings.
 
-1. Failure-Aware Automation with Human-in-the-Loop Escalation:
-Most SOAR implementations assume that automated actions will succeed. In contrast, this project explicitly treats automation failure as a first-class event.
-Whenever an automated response fails due to tool unavailability, permission issues, or execution errors, the system:
+4)Context-Aware Playbook Selection
+Response playbooks are selected based on incident severity, priority, and correlation context rather than only alert type.
 
-a. Captures failure artifacts
-b. Records the failure context
-c. Immediately notifies a human analyst
+5)Simulation-Based Validation
+Simulated alerts and failure scenarios are used to test and validate response workflows before real deployment.
 
-This approach improves operational reliability and ensures that automation does not silently fail, which is a common weakness in existing systems.
+6)Human-in-the-Loop Escalation
+Automation failures and high-risk actions are automatically escalated to human analysts for intervention.
 
+7)Separation of Orchestration and Actuation
+Decision-making logic is separated from response execution to improve safety, maintainability, and extensibility.
 
-2. Explicit Incident Lifecycle Modeling:
-Instead of treating incidents as static records, this system models incidents as stateful entities with controlled lifecycle transitions (Open → In Progress → Escalated → Resolved).
-This introduces:
-
-a. Clear accountability
-b. Auditability
-c. SLA tracking potential
-
-Such explicit lifecycle enforcement is often missing in academic SOAR projects and reflects real SOC operational practices.
-
-3. Context-Driven Playbook Selection:
-Rather than triggering responses purely based on alert type, the system selects playbooks using incident context, including:
-
-a. Severity
-b. Correlation results
-c. Incident priority
-
-This reduces over-automation and ensures that responses are proportional to the actual risk, improving decision quality.
-
-4. Simulation-Driven Design for Testing and Validation:
-A built-in alert simulation mechanism is used to emulate real security events.
-This enables:
-
-a. Safe testing of automation workflows
-b. Validation of playbooks without production systems
-c. Repeatable experimentation
-
-This design choice allows the platform to be evaluated realistically even without access to enterprise-grade security tools.
-
-5. Separation of Coordination and Actuation:
-The system clearly separates:
-
-a. Orchestration logic (decision-making, playbook execution)
-b. Actuation logic (actual response execution)
-
-This modularity:
-a. Improves maintainability
-b. Enables future extension
-c. Allows safer automation control
-
-Such separation reflects production-grade architectural thinking rather than a monolithic design.
-
-6. Audit-First Architecture:
-Every alert, action, approval, failure, and resolution is logged with timestamps and context.
-This makes the platform:
-
-a. Compliance-ready
-b. Explainable
-c. Suitable for post-incident analysis
-
-Instead of adding logging as an afterthought, auditability is embedded into the core design.
-
+8)Audit-First Design
+All alerts, actions, approvals, and failures are logged to ensure transparency, traceability, and compliance.
