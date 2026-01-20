@@ -33,15 +33,9 @@ The system is designed using a modular microservices approach, where each servic
 and a dashboard is also required which is connected to the controller module
 plus a logging service whis is connected to the brain
 
-
-
-
-
 to make it scalable and cheaper, we will host it on the cloud and will host them based on zones across the world, to reduce latency.
 
 users may also host it on their local system.
-
-
 
 ## Core Services
 
@@ -82,4 +76,3 @@ users may also host it on their local system.
 * Suitable for incremental implementation and future enhancements
 
 This microservices-based architecture provides a flexible and extensible foundation for building and testing a SOAR platform in an academic or experimental environment.
-

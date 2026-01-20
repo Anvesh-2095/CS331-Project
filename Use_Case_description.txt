@@ -9,3 +9,7 @@ and monitoring alerts. The Security Administrator manages users, roles, and syst
 configuration. External Security Tools generate alerts that are ingested by the system.
 
 The diagram helps in understanding the functional behavior and scope of the SOAR system.
+
+
+Explanation
+-----------
