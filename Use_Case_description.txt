@@ -1,1 +1,11 @@
+Use Case Diagram Description
+-----------------------------
 
+The use case diagram represents the interaction between users and the SOAR system.
+The main actors are SOC Analyst, Security Administrator, and External Security Tools.
+
+The SOC Analyst interacts with use cases such as viewing incidents, approving actions,
+and monitoring alerts. The Security Administrator manages users, roles, and system
+configuration. External Security Tools generate alerts that are ingested by the system.
+
+The diagram helps in understanding the functional behavior and scope of the SOAR system.
