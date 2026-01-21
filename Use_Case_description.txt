@@ -1,22 +1,29 @@
-Use Case Diagram Description
------------------------------
+Use Case Diagram Description – SOAR Platform
 
-The use case diagram represents the interaction between users and the SOAR system.
-The main actors are SOC Analyst, Security Administrator, and External Security Tools.
+The use case diagram represents the behavioral view of the Security Orchestration, Automation, and Response (SOAR) system by illustrating how external actors interact with the system to handle security incidents.
 
-The SOC Analyst interacts with use cases such as viewing incidents, approving actions,
-and monitoring alerts. The Security Administrator manages users, roles, and system
-configuration. External Security Tools generate alerts that are ingested by the system.
+The SOAR Platform acts as the central system boundary within which all security orchestration and response activities take place.
 
-The diagram helps in understanding the functional behavior and scope of the SOAR system.
+Actors
 
+External Security Tools generate security alerts that are consumed by the SOAR system.
 
-Explanation
--------------
+Security Analyst interacts with the system to monitor incidents, approve high-risk actions, and handle escalations.
 
-The use case diagram provides a high-level view of how different actors interact with the SOAR system.
-It focuses on the functional behavior of the system rather than implementation details.
+System Administrator configures response playbooks and manages system behavior.
 
-Each use case represents a specific functionality provided by the system to its users.
+Notification Service is used to deliver alerts and incident notifications to human analysts.
 
+Use Case Flow
 
+The process begins when External Security Tools send alerts to the system through the Ingest Security Alerts use case. These alerts are then processed through Normalize Alerts and Correlate Alerts to reduce noise and identify meaningful security events.
+
+Once correlated, the system creates a structured incident using the Create Incident use case. The incident is tracked and updated through the Manage Incident Lifecycle use case, which maintains states such as Open, In Progress, Escalated, and Resolved.
+
+Based on the incident context, the system executes the Execute Response Playbook use case. This use case includes the Perform Automated Response functionality, which carries out predefined response actions.
+
+For high-impact or risky actions, the Request Manual Approval use case extends the playbook execution, requiring explicit approval from a Security Analyst before proceeding.
+
+If an automated response fails due to errors or unavailable integrations, the Handle Failure / Exception use case is triggered as an extension of automated response. In such cases, the system records relevant artifacts and invokes the Notify Analyst use case to ensure human intervention.
+
+Throughout the incident handling process, the Record Artifacts & Logs use case maintains detailed audit information to support transparency, compliance, and post-incident analysis.
