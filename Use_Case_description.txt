@@ -12,4 +12,11 @@ The diagram helps in understanding the functional behavior and scope of the SOAR
 
 
 Explanation
------------
+-------------
+
+The use case diagram provides a high-level view of how different actors interact with the SOAR system.
+It focuses on the functional behavior of the system rather than implementation details.
+
+Each use case represents a specific functionality provided by the system to its users.
+
+
