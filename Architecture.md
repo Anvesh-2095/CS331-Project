@@ -1,78 +1,73 @@
 # SOAR System Architecture
 
-This document describes the high-level architecture of the SOAR platform.
-
-The system follows a modular design consisting of alert ingestion, normalization,
-correlation, incident management, playbook execution, response actuation, and
-notification components. Each module operates independently and communicates
-through well-defined interfaces to ensure scalability, reliability, and ease of
-maintenance.
-
-Detailed module responsibilities and interaction flows will be expanded as the
-implementation progresses.
-
-## SOAR System Architecture
-
 This document describes the microservices-based architecture of the SOAR (Security Orchestration, Automation, and Response) platform.
 
-The system is designed using a modular microservices approach, where each service performs a specific responsibility. The services communicate through well-defined interfaces, allowing the system to be scalable, maintainable, and easy to test.
+The system is designed using a modular microservices approach, where each service performs a specific responsibility. The services communicate through well-defined interfaces and a central message bus, allowing the system to be scalable, maintainable, and easy to test.
 
-### in microservices style, the following services will be implemented
+## Deployment Strategy
 
-1. service to read notifications / alerts and pass them to brain
-2. brain, actual logic will be written here
-3. playbook, which will try to shrug off the attack / alert
-4. a notification service used when SOAR platform cannot solve the problem
-5. a artifact recording service which sits between controller and notification service
-
-###### the following services will also be needed or simulated
-
-1. a simulation of alert
-2. a simulation of actuators - planning to make it synchronous to playbook service, so we can define outcome on our own while testing
-
-and a dashboard is also required which is connected to the controller module
-plus a logging service whis is connected to the brain
-
-to make it scalable and cheaper, we will host it on the cloud and will host them based on zones across the world, to reduce latency.
-
-users may also host it on their local system.
+To ensure low latency and high availability, the complete platform is containerized and designed for **multi-region replication**. Rather than splitting services across regions, full replicas of the entire platform can be deployed in different geographic zones (e.g., US-East, AP-South) to serve local users closer to their location.
 
 ## Core Services
 
-1. Alert Ingestion Service  
-   This service is responsible for receiving security alerts and notifications. Alerts may originate from real security tools or from a simulated alert source. The service reads incoming alerts, performs basic validation, and forwards them to the Brain service for further analysis.
-2. Brain Service  
-   The Brain service contains the core decision-making logic of the SOAR system. It analyzes incoming alerts, evaluates their severity and type, and determines the appropriate response strategy. Based on this analysis, the Brain service selects a suitable playbook and triggers its execution.
-3. Playbook Service  
-   The Playbook service executes predefined response workflows. Each playbook consists of ordered steps that attempt to mitigate or resolve a security incident. The playbook interacts with actuator simulations to perform response actions and reports the outcome back to the Brain service.
-4. Notification Service  
-   The Notification service is used when the SOAR platform is unable to fully resolve an incident automatically. It sends notifications or alerts to security analysts or administrators, informing them about unresolved incidents or required manual intervention.
-5. Artifact Recording Service  
-   The Artifact Recording service records important artifacts such as alerts, incident details, response actions, and outcomes. This service sits between the controller logic and the Notification service to ensure that all relevant data is stored before notifications are sent. It supports auditing, reporting, and later analysis.
+### 1. Alert Ingestion Service
+
+This service is the entry point for the platform. It is responsible for receiving security alerts and notifications from real security tools or simulated sources. The service performs basic validation, normalizes the data formats, and publishes the events to the Brain service.
+
+### 2. Brain Service (Context-Aware Decision Engine)
+
+The Brain is the stateless orchestration engine. While it does not retain local session memory, it is **context-aware**.
+
+* **Function:** It retrieves historical context (e.g., previous offenses by an IP) from the database before making decisions.
+* **Logic:** It analyzes the alert severity, correlates it with past data, and triggers the appropriate Playbook. 
+
+### 3. Playbook Service
+
+The Playbook service manages the execution of predefined response workflows.
+
+* **Function:** It receives a command from the Brain and executes steps sequentially.
+* **Sync Actuation:** Currently, it interacts **synchronously** with the actuators for strict consistency in the lab, though the modular design permits a seamless transition to **asynchronous, event-driven actuation** in future high-scale iterations.
+
+### 4. Notification Service
+
+This service handles human communication. It is triggered when the SOAR platform cannot resolve an incident automatically or when a critical threshold is breached. It integrates with external communication tools (Email, Slack, Discord) to alert security analysts.
+
+### 5. Artifact Recording Service (The Listener)
+
+This service acts as a **passive listener** on the message bus.
+
+* **Function:** It observes all traffic between the Ingestion, Brain, and Playbook services.
+* **Benefit:** Instead of blocking the workflow, it asynchronously records every alert, decision, action, and outcome into the long-term storage (Audit Log). This ensures zero latency impact on the core remediation process while maintaining a perfect audit trail.
 
 ## Supporting and Simulated Services
 
-6. Alert Simulation Service  
-   This service simulates the generation of security alerts for testing and demonstration purposes. It allows the system to be tested without relying on real security tools.
-7. Actuator Simulation Service  
-   This service simulates response actions such as IP blocking, account suspension, or endpoint isolation. The actuator simulation is designed to operate synchronously with the Playbook service. During testing, predefined outcomes can be configured to simulate successful or failed response actions.
+### 6. Alert Simulation Service
+
+This service generates mock security alerts (e.g., Phishing JSON objects) to validate the pipeline without requiring live malware or real attacks.
+
+### 7. Actuator Simulation Service
+
+This service mimics the behavior of real security tools (Firewalls, Active Directory, EDR).
+
+* **Behavior:** It operates synchronously with the Playbook service to ensure deterministic testing.
+* **Configurable Outcomes:** Users can configure it to simulate "Success" (IP Blocked) or "Failure" (Connection Timeout) to test how the Brain handles errors.
 
 ## Interaction Flow
 
-1. An alert is generated by the Alert Simulation Service or an external source.
-2. The Alert Ingestion Service receives the alert and forwards it to the Brain service.
-3. The Brain service analyzes the alert and selects an appropriate playbook.
-4. The Playbook service executes response steps and interacts with the Actuator Simulation Service.
-5. Response outcomes are returned to the Brain service.
-6. If the incident cannot be resolved, the Notification service is triggered.
-7. The Artifact Recording Service stores all relevant data before notifications are sent.
+1. **Ingest:** An alert is generated by the Alert Simulation Service. The Ingestion Service validates it and pushes it to the message bus.
+2. **Archive:** The Artifact Recording Service immediately detects the new message and logs it.
+3. **Decide:** The Brain Service picks up the alert, queries the DB for context, and selects a Playbook.
+4. **Act:** The Playbook Service executes steps, making synchronous calls to the Actuator Simulation Service.
+5. **Verify:** The Actuator returns a definite "Success/Fail" status to the Playbook, which reports back to the Brain.
+6. **Resolve/Escalate:**
+   * If successful, the Brain closes the ticket.
+   * If failed, the Brain triggers the Notification Service.
 
 ## Architecture Benefits
 
-* Clear separation of responsibilities across services
-* Independent development and testing of each service
-* Easy simulation of alerts and response actions
-* Improved scalability and maintainability
-* Suitable for incremental implementation and future enhancements
+* **Reliability:** Synchronous actuation ensures data consistency during demos.
+* **Auditability:** The "Listener" pattern for artifacts ensures no data is lost, even if downstream services fail.
+* **Scalability:** Stateless design allow the "Brain" and "Ingestion" services to scale horizontally across multiple instances.
+* **Testability:** Decoupled simulations allow for safe, predictable "Red Team vs Blue Team" scenarios in a lab environment.
 
-This microservices-based architecture provides a flexible and extensible foundation for building and testing a SOAR platform in an academic or experimental environment.
+This architecture provides a robust, professional foundation for an automated security platform.
