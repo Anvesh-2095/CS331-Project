@@ -29,3 +29,10 @@ Association relationships show direct interactions between actors and use cases.
 The Execute Response Playbook use case includes Perform Automated Response, as automated actions are a mandatory part of playbook execution.
 The Request Manual Approval use case extends playbook execution and is triggered only when an action is classified as high-impact.
 The Handle Failure / Exception use case extends automated response to manage error conditions and unresolved incidents.
+
+
+System Boundary and Scope
+--------------------------
+All use cases are contained within the SOAR Platform system boundary, which defines the scope of automation, orchestration, and response activities.
+External actors such as security tools and notification services interact with the system but remain outside the boundary.
+The diagram clearly separates automated system behavior from human decision-making responsibilities.
