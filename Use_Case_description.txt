@@ -36,3 +36,11 @@ System Boundary and Scope
 All use cases are contained within the SOAR Platform system boundary, which defines the scope of automation, orchestration, and response activities.
 External actors such as security tools and notification services interact with the system but remain outside the boundary.
 The diagram clearly separates automated system behavior from human decision-making responsibilities.
+
+
+
+Purpose of the Use Case Diagram
+---------------------------------
+The use case diagram helps in understanding the functional behavior of the SOAR platform from a user perspective.
+It provides a clear view of how alerts are handled, how incidents are managed, and how automated and manual responses are coordinated.
+This diagram serves as a foundation for requirement analysis, system design, and further implementation of the SOAR platform.
