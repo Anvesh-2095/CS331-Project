@@ -1,4 +1,4 @@
-Use Case Diagram Description – SOAR Platform
+pUse Case Diagram Description – SOAR Platform
 ----------------‐-----------------------------
 The use case diagram represents the behavioral view of the Security Orchestration, Automation, and Response (SOAR) system by illustrating how external actors interact with the system to handle security incidents.
 The SOAR Platform acts as the central system boundary within which all security orchestration and response activities take place.
@@ -44,3 +44,11 @@ Purpose of the Use Case Diagram
 The use case diagram helps in understanding the functional behavior of the SOAR platform from a user perspective.
 It provides a clear view of how alerts are handled, how incidents are managed, and how automated and manual responses are coordinated.
 This diagram serves as a foundation for requirement analysis, system design, and further implementation of the SOAR platform.
+
+
+
+Conclusion
+------------
+The use case diagram effectively captures the interactions between users, external systems, and the SOAR platform.
+It highlights the balance between automation and human control, ensuring both efficiency and safety in security incident response.
+
