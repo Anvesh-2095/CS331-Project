@@ -1,0 +1,116 @@
+
+    class Alert 
+    {
+        String alertID
+        String source
+        DateTime timestamp
+        JSON rawPayload
+        String severity
+
+        void normalize() 
+	Boolean isValid() 
+    }
+
+    class Incident 
+    {
+        String incidentID
+        String status
+        String priority
+        List<Alert> relatedAlerts
+        Map contextData
+
+        addAlert(Alert)
+        updateStatus(String)
+        assignAnalyst(String)
+    }
+
+    class Playbook 
+    {
+        String playbookID
+        String name
+        String triggerCondition
+        List<PlaybookStep> steps
+
+        getSteps()
+    }
+
+    class PlaybookStep 
+    {
+        int stepOrder
+        String actionType
+        String target
+        String command
+        retryCount
+    }
+
+    class AuditLog 
+    {
+        String logID
+        DateTime timestamp
+        String serviceName
+        String actionDetail
+        String outcome
+    }
+
+
+    
+    class IngestionService 
+    {
+        Endpoint webhookUrl
+
+        receiveAlert(JSON)
+        validateSchema(JSON)
+        publishToBus(Alert)
+    }
+
+    class BrainService 
+    {
+        PolicyEngine rules
+
+        consumeAlert(Alert)
+        correlate(Alert) : Incident
+        fetchContext(Incident)
+        selectPlaybook(Incident) : Playbook
+        commandPlaybook(Playbook, Incident)
+    }
+
+    class PlaybookService 
+    {
+        executePlaybook(Playbook, Incident)
+        executeStep(PlaybookStep)
+        handleStepFailure(PlaybookStep)
+        reportStatusToBrain()
+    }
+
+    class NotificationService 
+    {
+        sendEmail(String to, String body)
+        alertAnalyst(Incident)
+    }
+
+    class ArtifactService 
+    {
+        listenToBus()
+        recordLog(AuditLog)
+        generateReport(Incident)
+    }
+
+	// Simulation services, not actual
+    
+    class ActuatorSimulator 
+    {
+        <<Interface>>
+        performAction(String command, String target) : boolean
+    }
+    
+    class FirewallActuator 
+    {
+        performAction()
+        blockIP(ip)
+    }
+    
+    class EmailActuator 
+    {
+        performAction()
+        deleteEmail(messageId)
+    }
