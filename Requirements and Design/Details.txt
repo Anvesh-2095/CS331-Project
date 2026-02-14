@@ -1,1 +1,28 @@
+The SOAR platform follows the Microservices Architecture style because:
+* The system is divided into independent services, each responsible for a specific function.
+* Each service operates as a separate deployable unit called module.
+* Each module perform specific function.
+* Modules communicate through well-defined interfaces (APIs).
+* The logic is not tightly coupled into a single codebase.
+* System follows high cohesion and low coupling.
+
+
+
+Granularity of Components
+--------------------------
+The system is divided into the following fine-grained services:
+Alert Ingestion Service
+Brain (Decision Engine) Service
+Playbook Execution Service
+Artifact Recording Service
+Notification Service
+Alert Simulation Service
+Actuator Simulation Service
+
+Each service:
+Has a single responsibility
+Can be modified independently
+Can be scaled independently
+
+This separation clearly reflects microservices-level granularity.
 
