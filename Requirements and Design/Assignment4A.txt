@@ -26,3 +26,65 @@ Can be scaled independently
 
 This separation clearly reflects microservices-level granularity.
 
+
+
+The Microservices Architecture is the most appropriate choice for the SOAR system due to the following technical and practical reasons:
+
+1. Scalability
+* The SOAR system processes security alerts that may increase rapidly during cyber-attacks.
+* In a microservices architecture, each service can scale independently.
+* For example:
+● Alert Ingestion Service can scale during high alert volume.
+● Playbook Execution Service can scale when multiple incidents occur simultaneously.
+* The entire system does not need to scale as one large unit.
+* This reduces resource usage and improves performance efficiency.
+
+2. Maintainability
+* Each service has a single responsibility (e.g., alert ingestion, playbook execution, notification).
+* Developers can modify one service without affecting others.
+* Codebase remains smaller and easier to understand.
+* Bugs can be isolated to a specific service.
+* Maintenance becomes faster and safer compared to monolithic systems.
+
+3. Fault Isolation and Reliability
+* In a monolithic system, failure in one module can crash the entire system.
+* In microservices:
+● If Notification Service fails, alert processing continues.
+● If Actuator Simulation fails, logging and artifact recording still function.
+* This improves system reliability.
+* Critical security operations remain operational even if one service fails.
+
+4. Flexibility and Extensibility
+* New services can be added without redesigning the entire system.
+* For example:
+● Threat Intelligence Service can be added later.
+● Machine Learning-based Detection Service can be integrated in future.
+* Services can be upgraded independently.
+* Different technologies can be used for different services if required.
+
+5. Performance Optimization
+* Resource-heavy components (like Brain/Decision Engine) can be optimized separately.
+* CPU-intensive services can be deployed on stronger machines.
+* Lightweight services can run on minimal resources.
+* This allows better performance tuning compared to a single large application.
+
+6. Alignment with SOAR Functional Requirements
+* The SOAR system requires:
+● Alert processing
+● Incident correlation
+● Playbook execution
+● Response automation
+● Logging and notification
+* Each of these functionalities is naturally modular.
+* Microservices architecture directly supports:
+● Separation of orchestration logic
+● Separation of automation logic
+● Independent response components
+* This makes the architecture well-aligned with the system’s functional design.
+
+7. Future Deployment Readiness
+* Microservices architecture supports containerization (e.g., Docker).
+* Supports cloud deployment.
+* Suitable for distributed environments.
+* Ready for enterprise-level expansion.
+
