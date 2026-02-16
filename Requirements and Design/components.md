@@ -1,10 +1,10 @@
 Q2) Components present in the SOAR project (Application Components)
 ==================================================================
 
-A) Core Processing Components
+A) Processing Components
 ----------------------------
 
-- IngestionService
+- Ingestion Service
   - Receives alerts from external tools (simulated).
   - Validates incoming alert schema and publishes alert data internally.
 
@@ -22,11 +22,11 @@ A) Core Processing Components
 B) Orchestration + Automation Components
 ---------------------------------------
 
-- BrainService (Decision Engine)
+- Brain Service (Decision Engine)
   - Selects response playbooks based on incident context.
   - Commands the playbook execution service.
 
-- PlaybookService
+- Playbook Service
   - Executes ordered playbook steps.
   - Tracks step success/failure and triggers retry logic.
 
@@ -37,13 +37,13 @@ B) Orchestration + Automation Components
 C) Response / Actuation Components
 ----------------------------------
 
-- ActuatorSimulator (Interface)
+- Actuator Simulator (Interface)
   - Provides a standard contract for all automated response actions.
 
-- FirewallActuator
+- Firewall Actuator
   - Simulates response actions such as blocking an IP or isolating a host.
 
-- EmailActuator
+- Email Actuator
   - Simulates response actions such as deleting phishing emails or quarantining messages.
 
 
@@ -54,7 +54,7 @@ D) Logging, Reporting & Escalation Components
   - Captures automation failures (tool unavailable, permission error, execution error).
   - Escalates to analysts when automation cannot complete.
 
-- ArtifactService
+- Artifact Service
   - Records incident activity logs and failure artifacts.
   - Generates incident summary and compliance-ready reports.
 
@@ -70,7 +70,7 @@ D) Logging, Reporting & Escalation Components
 E) Human Interaction Components
 -------------------------------
 
-- NotificationService
+- Notification Service
   - Sends notifications for:
     - incident creation
     - escalation
