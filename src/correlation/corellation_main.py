@@ -6,13 +6,15 @@ from typing import List, Dict, Optional
 CORRELATION_WINDOW_SECONDS = 300  # 5 Minutes
 THRESHOLD_COUNT = 3               # If > 3 alerts in window, create Incident
 
+CORRELATION_WINDOW_MILLIS = CORRELATION_WINDOW_SECONDS * 1000  # Convert to milliseconds
+
 class Incident:
     """
     Represents a grouped set of alerts that require action.
     """
     def __init__(self, key: str, alerts: List[Dict]):
         self.id = f"inc_{int(time.time())}"
-        self.correlated_key = key  # e.g., The IP Address "192.168.1.5"
+        self.correlated_key = key  # e.g., The IP Address
         self.alerts = alerts
         self.timestamp = time.time()
         self.severity = max([a.get('normalized_severity', 1) for a in alerts])
@@ -54,19 +56,16 @@ class CorrelationEngine:
 
     def _prune_buffer(self, key: str):
         """Removes alerts that are too old to matter."""
-        current_time = time.time()
+        current_time = int(time.time() * 1000)  # Current time in millisecond
         # Keep only alerts within the window
-        # Assuming alert['timestamp'] is parseable or we use ingestion time
-        # For simplicity, we just use current time of processing here
+        # alert['timestamp'] is unix time in millisecond
+        
         valid_alerts = []
         for alert in self.alert_buffer[key]:
-            # In a real app, parse the alert string timestamp to unix time.
-            # Here we assume the alert object has an 'arrival_time' added by us, 
-            # or we just rely on index if the stream is fast.
-            # Let's assume we attached a local processing timestamp:
-            alert_time = alert.get('_local_timestamp', current_time)
             
-            if current_time - alert_time < CORRELATION_WINDOW_SECONDS:
+            alert_time = alert.get('timestamp') or alert.get('_local_timestamp')
+            
+            if current_time - alert_time < CORRELATION_WINDOW_MILLIS:
                 valid_alerts.append(alert)
         
         self.alert_buffer[key] = valid_alerts
@@ -123,3 +122,6 @@ if __name__ == "__main__":
 
 
 # TODO: Test the code and add ddos checker
+# BUG: it will only create incidents of a fixed size
+# we need dynamic incident creation, add alerts to already created incidents if they match the key and are within the time window.
+# also requires a service to remove old alerts which are not part of any incident

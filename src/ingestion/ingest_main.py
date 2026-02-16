@@ -1,6 +1,6 @@
 import uvicorn
 import uuid
-from datetime import datetime
+from datetime import datetime, time
 from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel, Field, ValidationError
 from typing import Optional, Dict, Any
@@ -85,12 +85,13 @@ async def ingest_alert(alert: RawAlert):
     
     # Generate unique ID for tracking
     unique_id = str(uuid.uuid4())
-    current_time = datetime.utcnow().isoformat()
+    # current_time = datetime.utcnow().isoformat()
+    current_time = int(time.time() * 1000)  # milliseconds unix timestamp
     
     # Normalization Logic
     clean_alert = NormalizedAlert(
         alert_id=unique_id,
-        timestamp=current_time,
+        timestamp=current_time, # TODO: check if alert has its own timestamp and use that instead
         ingested_at=current_time,
         source=alert.tool_id,
         normalized_severity=normalize_severity(alert.severity),
