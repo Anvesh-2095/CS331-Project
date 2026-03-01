@@ -1,0 +1,8 @@
+Cases for End Users:
+
+1. External Security Tools: like SIEM, firewall, etc. 
+uses a HTTP endpoint to send security alerts to the ingestion service
+
+2. Security Analyst can log in and fill playbook through dashboard
+
+3. Administrator can log in to the dashboard and from there can take over the SOAR service
