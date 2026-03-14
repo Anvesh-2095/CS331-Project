@@ -1,4 +1,4 @@
-User Interface Design for SOAR Platform
+User Interface Design for SOAR Platform:
 ----------------------------------------
 
 
@@ -38,6 +38,7 @@ Multiple incidents can be monitored simultaneously.
 It makes incident management easier compared to command-based systems.
 
 
+
 2. Command Line Interface (CLI)
 * Purpose:
 The CLI is used by security analysts when they take control of an incident and need to perform investigation or response actions.
@@ -58,4 +59,20 @@ It allows faster interaction for advanced users.
 It supports automation and scripting.
 It provides precise control over system operations.
 
+
+
+3. Direct Manipulation Interface (DMI)
+* Purpose:
+The DMI is used by system administrators to create and manage response playbooks.
+
+* Features:
+Administrators can create automation workflows by dragging and arranging actions.
+Playbooks define how the system automatically responds to incidents.
+Allows editing, updating, and managing response workflows.
+
+* Justification:
+A direct manipulation interface is suitable because:
+It allows visual creation of workflows.
+It reduces complexity in writing automation logic.
+It improves usability for administrators managing security workflows.
 
