@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOAR Analyst CLI</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px;
+            margin: 0;
+            padding: 20px;
+            height: 100vh;
+            box-sizing: border-box;
+            overflow-y: auto;
+            cursor: text;
+        }
+        #terminal-container {
+            display: flex;
+            flex-direction: column;
+        }
+        .log-line {
+            margin: 4px 0;
+            word-wrap: break-word;
+        }
+        .error-text {
+            color: #ff5555;
+            margin-bottom: 12px;
+        }
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            margin-top: 4px;
+        }
+        .prompt {
+            color: #00ff00;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+        #command-input {
+            background: transparent;
+            border: none;
+            color: #00ff00;
+            font-family: inherit;
+            font-size: inherit;
+            flex-grow: 1;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="terminal-container">
+        <div class="log-line">SOAR Override CLI v1.0.0</div>
+        <div class="log-line">Starting secure session... Done.</div>
+        <div class="log-line">Type 'help' for a list of commands.</div>
+        <br>
+        
+        <div id="output-history"></div>
+        
+        <div class="input-wrapper">
+            <span class="prompt">soar-cli@analyst:~$</span>
+            <input type="text" id="command-input" autocomplete="off" spellcheck="false" autofocus>
+        </div>
+    </div>
+
+    <script>
+        const inputField = document.getElementById('command-input');
+        const outputHistory = document.getElementById('output-history');
+
+        // Always keep focus on the input to mimic a real terminal
+        document.body.addEventListener('click', () => {
+            inputField.focus();
+        });
+
+        inputField.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const command = inputField.value.trim();
+                
+                if (command !== '') {
+                    // 1. Echo the user's command to the history
+                    const cmdDiv = document.createElement('div');
+                    cmdDiv.className = 'log-line';
+                    cmdDiv.innerHTML = `<span class="prompt">soar-cli@analyst:~$</span> ${command}`;
+                    outputHistory.appendChild(cmdDiv);
+
+                    // 2. Print the simulated backend error
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'log-line error-text';
+                    errorDiv.textContent = 'Error: backend not connected';
+                    outputHistory.appendChild(errorDiv);
+                }
+
+                // 3. Clear the input and scroll to the bottom
+                inputField.value = '';
+                window.scrollTo(0, document.body.scrollHeight);
+            }
+        });
+    </script>
+</body>
+</html>
