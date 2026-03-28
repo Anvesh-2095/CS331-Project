@@ -46,7 +46,7 @@ def create_refresh_token(data: dict, expires_delta: timedelta) -> str:
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-def publish_audit_log(event_type: str, user_email: str, status: str, details: dict = None):
+def publish_audit_log(event_type: str, user_email: str, status: str, details: dict = {}):
     """
     Dummy function to simulate pushing an audit event to RabbitMQ.
     The Artifact Recording Service will eventually listen for these.
@@ -56,7 +56,7 @@ def publish_audit_log(event_type: str, user_email: str, status: str, details: di
         "timestamp": datetime.utcnow().isoformat() + "Z",
         "user": user_email,
         "status": status,                   # "SUCCESS" or "FAILURE"
-        "details": details or {}
+        "details": details
     }
     
     # TODO: Replace this print statement with actual pika/RabbitMQ channel.basic_publish logic

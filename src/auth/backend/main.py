@@ -1,7 +1,7 @@
 import os
 import uvicorn
 from datetime import timedelta
-from fastapi import FastAPI, HTTPException, status, Depends
+from fastapi import FastAPI, HTTPException, status, Depends, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, EmailStr
 from dotenv import load_dotenv
@@ -58,7 +58,10 @@ def mock_db_get_user(email: str):
 # --- Endpoints ---
 
 @app.post("/api/v1/auth/login", response_model=TokenResponse)
-async def login_for_access_token(credentials: LoginRequest):
+async def login_for_access_token(
+    credentials: LoginRequest,
+    background_tasks: BackgroundTasks
+):
     """
     The Common Login endpoint. 
     Authenticates the user and issues role-specific tokens.
@@ -67,6 +70,15 @@ async def login_for_access_token(credentials: LoginRequest):
     user = mock_db_get_user(credentials.email)
     
     if not user or not utils.verify_password(credentials.password, user["password_hash"]):
+        # Log the failed attempt in the background
+        background_tasks.add_task(
+            utils.publish_audit_log,
+            event_type="AUTH_LOGIN_ATTEMPT",
+            user_email=credentials.email,
+            status="FAILURE",
+            details={"reason": "Invalid credentials provided"}
+        )
+        
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
@@ -95,6 +107,15 @@ async def login_for_access_token(credentials: LoginRequest):
     )
 
     # TODO: Save the refresh_token to the `refresh_tokens` PostgreSQL table here
+
+    # Log the successful login in the background
+    background_tasks.add_task(
+        utils.publish_audit_log,
+        event_type="AUTH_LOGIN_ATTEMPT",
+        user_email=credentials.email,
+        status="SUCCESS",
+        details={"role_assigned": user_role, "action": "Issued Access and Refresh tokens"}
+    )
 
     # 4. Return tokens to frontend for RBAC Redirection
     return {
