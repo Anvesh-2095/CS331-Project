@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SOAR Analyst CLI</title>
+    <title>SOAR CLI</title>
     <style>
         body {
-            background-color: #121212;
+            background-color: #0d0d0d;
             color: #00ff00;
             font-family: 'Courier New', Courier, monospace;
             font-size: 16px;
@@ -17,51 +17,25 @@
             overflow-y: auto;
             cursor: text;
         }
-        #terminal-container {
-            display: flex;
-            flex-direction: column;
-        }
-        .log-line {
-            margin: 4px 0;
-            word-wrap: break-word;
-        }
-        .error-text {
-            color: #ff5555;
-            margin-bottom: 12px;
-        }
-        .input-wrapper {
-            display: flex;
-            align-items: center;
-            margin-top: 4px;
-        }
-        .prompt {
-            color: #00ff00;
-            margin-right: 8px;
-            font-weight: bold;
-        }
+        .log-line { margin: 4px 0; word-wrap: break-word; }
+        .error-text { color: #ff5555; }
+        .system-text { color: #aaaaaa; }
+        .input-wrapper { display: flex; align-items: center; margin-top: 4px; }
+        .prompt { color: #00ff00; margin-right: 8px; font-weight: bold; }
         #command-input {
-            background: transparent;
-            border: none;
-            color: #00ff00;
-            font-family: inherit;
-            font-size: inherit;
-            flex-grow: 1;
-            outline: none;
+            background: transparent; border: none; color: #00ff00;
+            font-family: inherit; font-size: inherit; flex-grow: 1; outline: none;
         }
     </style>
 </head>
 <body>
-
     <div id="terminal-container">
-        <div class="log-line">SOAR Override CLI v1.0.0</div>
-        <div class="log-line">Starting secure session... Done.</div>
-        <div class="log-line">Type 'help' for a list of commands.</div>
+        <div class="log-line system-text">SOAR Terminal v1.0.0</div>
+        <div class="log-line system-text">Type 'login <email> <password>' to authenticate.</div>
         <br>
-        
         <div id="output-history"></div>
-        
         <div class="input-wrapper">
-            <span class="prompt">soar-cli@analyst:~$</span>
+            <span class="prompt">soar-cli:~$</span>
             <input type="text" id="command-input" autocomplete="off" spellcheck="false" autofocus>
         </div>
     </div>
@@ -69,33 +43,108 @@
     <script>
         const inputField = document.getElementById('command-input');
         const outputHistory = document.getElementById('output-history');
+        
+        let accessToken = null;
+        let refreshToken = null;
 
-        // Always keep focus on the input to mimic a real terminal
-        document.body.addEventListener('click', () => {
-            inputField.focus();
-        });
+        document.body.addEventListener('click', () => inputField.focus());
 
-        inputField.addEventListener('keydown', function(event) {
+        function printToConsole(text, type = 'normal') {
+            const div = document.createElement('div');
+            div.className = `log-line ${type === 'error' ? 'error-text' : type === 'system' ? 'system-text' : ''}`;
+            div.textContent = text;
+            outputHistory.appendChild(div);
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+
+        inputField.addEventListener('keydown', async function(event) {
             if (event.key === 'Enter') {
                 const command = inputField.value.trim();
-                
-                if (command !== '') {
-                    // 1. Echo the user's command to the history
-                    const cmdDiv = document.createElement('div');
-                    cmdDiv.className = 'log-line';
-                    cmdDiv.innerHTML = `<span class="prompt">soar-cli@analyst:~$</span> ${command}`;
-                    outputHistory.appendChild(cmdDiv);
+                if (command === '') return;
 
-                    // 2. Print the simulated backend error
-                    const errorDiv = document.createElement('div');
-                    errorDiv.className = 'log-line error-text';
-                    errorDiv.textContent = 'Error: backend not connected';
-                    outputHistory.appendChild(errorDiv);
+                const cmdDiv = document.createElement('div');
+                cmdDiv.className = 'log-line';
+                cmdDiv.innerHTML = `<span class="prompt">soar-cli:~$</span> ${command}`;
+                outputHistory.appendChild(cmdDiv);
+                inputField.value = ''; 
+
+                if (command.startsWith('login')) {
+                    const parts = command.split(' ');
+                    if (parts.length !== 3) {
+                        printToConsole("Usage: login <email> <password>", 'error');
+                        return;
+                    }
+                    
+                    try {
+                        printToConsole("Authenticating...", 'system');
+                        const res = await fetch('http://127.0.0.1:8001/api/v1/auth/login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email: parts[1], password: parts[2] })
+                        });
+                        
+                        if (res.ok) {
+                            const data = await res.json();
+                            accessToken = data.access_token;
+                            refreshToken = data.refresh_token;
+                            printToConsole(`Success! Logged in as ${data.role.toUpperCase()}`, 'system');
+                        } else {
+                            printToConsole("Access Denied: Invalid credentials", 'error');
+                        }
+                    } catch (e) {
+                        printToConsole("Connection Refused: Is the backend running?", 'error');
+                    }
+                    return;
                 }
 
-                // 3. Clear the input and scroll to the bottom
-                inputField.value = '';
-                window.scrollTo(0, document.body.scrollHeight);
+                if (!accessToken) {
+                    printToConsole("Authentication required. Please login.", 'error');
+                    return;
+                }
+
+                async function sendCommand(token) {
+                    return await fetch('http://127.0.0.1:8001/api/v1/soar/execute', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                        body: JSON.stringify({ command: command })
+                    });
+                }
+
+                try {
+                    let res = await sendCommand(accessToken);
+
+                    if (res.status === 401 && refreshToken) {
+                        printToConsole("[*] Token expired. Initiating silent refresh...", 'system');
+                        
+                        const refreshRes = await fetch('http://127.0.0.1:8001/api/v1/auth/refresh', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ refresh_token: refreshToken })
+                        });
+
+                        if (refreshRes.ok) {
+                            const data = await refreshRes.json();
+                            accessToken = data.access_token;
+                            refreshToken = data.refresh_token;
+                            printToConsole("[*] Session extended. Retrying...", 'system');
+                            res = await sendCommand(accessToken);
+                        } else {
+                            printToConsole("Session timeout limit reached. Please login again.", 'error');
+                            accessToken = null;
+                            refreshToken = null;
+                            return;
+                        }
+                    }
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        printToConsole(data.output);
+                    } else {
+                        printToConsole(`Server Error: ${res.status}`, 'error');
+                    }
+                } catch (e) {
+                    printToConsole("Lost connection to API.", 'error');
+                }
             }
         });
     </script>
