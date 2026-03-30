@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: soar-rabbitmq
+    ports:
+      - "5672:5672"   # The port your Python code will use to send messages
+      - "15672:15672" # The port for the web dashboard
+    environment:
+      RABBITMQ_DEFAULT_USER: soar_admin
+      RABBITMQ_DEFAULT_PASS: supersecret
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq # This saves your queues if you restart your PC
+
+volumes:
+  rabbitmq_data:
