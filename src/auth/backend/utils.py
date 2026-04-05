@@ -36,7 +36,7 @@ def create_refresh_token(data: dict, expires_delta: timedelta) -> str:
     to_encode.update({"exp": expire, "token_type": "refresh"})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-def publish_audit_log(event_type: str, user_email: str, status: str, details: dict = None):
+def publish_audit_log(event_type: str, user_email: str, status: str, details: dict = {}):
     """Dummy function to simulate pushing an audit event to RabbitMQ."""
     audit_message = {
         "event_type": event_type,
@@ -55,7 +55,7 @@ def publish_action_to_rabbitmq(action: str, target: str, user: str):
     Connects to RabbitMQ and publishes an action for the remote agent to execute.
     """
     # 1. Connect to the local Docker RabbitMQ instance
-    credentials = pika.PlainCredentials('soar_admin', 'supersecret')
+    credentials = pika.PlainCredentials('guest', 'guest')
     parameters = pika.ConnectionParameters(
         host='localhost', 
         port=5672, 

@@ -1,1 +1,10 @@
-pip install fastapi uvicorn python-jose[cryptography] passlib[bcrypt] python-dotenv pydantic dotenv jose
+fastapi 
+uvicorn 
+python-jose[cryptography] 
+passlib[bcrypt] 
+python-dotenv 
+pydantic 
+# dotenv 
+# jose
+sqlalchemy
+psycopg2-binary
