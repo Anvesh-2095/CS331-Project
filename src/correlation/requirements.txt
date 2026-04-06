@@ -1,1 +1,2 @@
 pip install fastapi uvicorn sqlalchemy psycopg2-binary pika python-dotenv pydantic
+pytest
