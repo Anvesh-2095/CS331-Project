@@ -8,6 +8,7 @@ from pydantic import BaseModel, EmailStr
 from jose import jwt, JWTError
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
+import uuid
 
 import utils
 from database import engine, Base, get_db
@@ -36,7 +37,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
 # --- Models ---
 class LoginRequest(BaseModel):
-    email: EmailStr
+    email: str # EmailStr
     password: str
 
 class RefreshRequest(BaseModel):
@@ -132,13 +133,13 @@ async def refresh_session(req: RefreshRequest, db: Session = Depends(get_db)):
         # 4. Revoke old token and save new one
         db_token.is_revoked = True
         new_db_token = models.RefreshToken(
-            user_id=user_id,
+            user_id=uuid.UUID(user_id),
             token_string=new_refresh,
             expires_at=datetime.utcnow() + refresh_expire
         )
         
         # Update user activity
-        user = db.query(models.User).filter(models.User.user_id == user_id).first()
+        user = db.query(models.User).filter(models.User.user_id == uuid.UUID(user_id)).first()
         if user:
             user.last_active_at = datetime.utcnow()
 
