@@ -28,7 +28,7 @@ def execute_local_os_command(action, target):
 
 def start_listening():
     """Connects to RabbitMQ and listens for commands."""
-    credentials = pika.PlainCredentials('soar_admin', 'supersecret')
+    credentials = pika.PlainCredentials('guest', 'guest')
     parameters = pika.ConnectionParameters('localhost', 5672, '/', credentials)
     
     try:
