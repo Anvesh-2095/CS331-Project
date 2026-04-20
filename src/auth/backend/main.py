@@ -67,7 +67,7 @@ async def get_current_user_role(token: str = Depends(oauth2_scheme)):
 @app.post("/api/v1/auth/login", response_model=TokenResponse)
 async def login(credentials: LoginRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     # 1. Fetch user from PostgreSQL
-    user = db.query(models.User).filter(models.User.email == credentials.email.lower).first()
+    user = db.query(models.User).filter(models.User.email == credentials.email.lower()).first()
     
     if not user or not utils.verify_password(credentials.password, user.password_hash):
         # Log failure to DB and RabbitMQ

@@ -1,0 +1,41 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.13, pytest-9.0.2, pluggy-1.6.0 -- D:\Programs\Projects\CS331 Project\src\ingestion\venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: D:\Programs\Projects\CS331 Project\src\ingestion
+plugins: anyio-4.13.0
+collecting ... collected 3 items
+
+test_ingestion.py::test_data_transformation_logic PASSED                 [ 33%]
+test_ingestion.py::test_validation_logic_failure PASSED                  [ 66%]
+test_ingestion.py::test_successful_ingestion_pipeline FAILED             [100%]
+
+================================== FAILURES ===================================
+_____________________ test_successful_ingestion_pipeline ______________________
+
+mock_rabbitmq = <MagicMock name='publish_to_queue' id='2001322209168'>
+
+    @patch("main.publish_to_queue")
+    def test_successful_ingestion_pipeline(mock_rabbitmq):
+        """
+        Tests the full DAL insertion and BLL transformation.
+        We @patch (mock) RabbitMQ so the test doesn't fail if Docker is turned off.
+        """
+        valid_payload = {
+            "tool_id": "PaloAlto-FW-01",
+            "event_type": "Brute Force Attempt",
+            "severity": "high",
+            "description": "Multiple failed SSH logins",
+            "source_ip": "192.168.1.150"
+        }
+    
+        response = client.post("/api/v1/ingest", json=valid_payload)
+    
+        # 1. Verify API responded correctly
+>       assert response.status_code == 200
+E       assert 500 == 200
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+test_ingestion.py:72: AssertionError
+=========================== short test summary info ===========================
+FAILED test_ingestion.py::test_successful_ingestion_pipeline - assert 500 == 200
+======================== 1 failed, 2 passed in 12.89s =========================

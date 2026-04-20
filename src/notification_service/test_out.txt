@@ -1,0 +1,10 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.13, pytest-9.0.2, pluggy-1.6.0 -- D:\Programs\Projects\CS331 Project\src\notification_service\venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: D:\Programs\Projects\CS331 Project\src\notification_service
+plugins: anyio-4.13.0
+collecting ... collected 1 item
+
+test_notification.py::test_notification_routing_logic PASSED             [100%]
+
+============================== 1 passed in 9.24s ==============================
