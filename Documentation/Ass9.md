@@ -55,8 +55,6 @@ Testing will cover the core backend microservices:
 | **TC-07** | Database Transaction Failure    | Valid login, but DB connection drops        | HTTP 500 Internal Server Error                          | HTTP 500 Internal Server Error | Pass       |
 | **TC-08** | Case-Insensitive Email Login    | Email capitalized (e.g., `Test@soar.local`) | HTTP 200, normal login success                          | HTTP 200, Tokens received      | Pass       |
 
-*(Note for Q2a: Simply paste your screenshot of the passing `test_auth.py` terminal output directly below this table in your final document).*
-
 ---
 
 ### Q2. b) Defect Analysis
